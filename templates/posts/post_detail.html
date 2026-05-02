@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} – {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<article class="post-detail">
+  {# Breadcrumb #}
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="{% url 'core:home' %}"><i class="fas fa-home" aria-hidden="true"></i> Bosh sahifa</a>
+    <span class="breadcrumb__sep" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+    <a href="{% url 'posts:list' %}">Postlar</a>
+    {% if post.category %}
+      <span class="breadcrumb__sep" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+      <a href="{% url 'posts:category_detail' post.category.slug %}">{{ post.category.name }}</a>
+    {% endif %}
+    <span class="breadcrumb__sep" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+    <span aria-current="page">{{ post.title|truncatechars:40 }}</span>
+  </nav>
+
+  {# Category badge #}
+  {% if post.category %}
+    <a href="{% url 'posts:category_detail' post.category.slug %}" class="badge badge--category">
+      <i class="fas fa-tag" aria-hidden="true"></i>
+      {{ post.category.name }}
+    </a>
+  {% endif %}
+
+  {# Title #}
+  <h1 class="post-detail__title mt-2">{{ post.title }}</h1>
+
+  {# Meta #}
+  <div class="post-detail__meta" role="list">
+    {% if post.author %}
+      <span role="listitem">
+        <i class="fas fa-user-circle" aria-hidden="true"></i>
+        {{ post.author }}
+      </span>
+    {% endif %}
+    <span role="listitem">
+      <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+      {{ post.created_at|date:"d M Y" }}
+    </span>
+    <span role="listitem">
+      <i class="fas fa-clock" aria-hidden="true"></i>
+      {{ post.updated_at|date:"d M Y" }}da yangilangan
+    </span>
+  </div>
+
+  {# Cover image #}
+  {% if post.cover_image %}
+    <img
+      class="post-detail__cover"
+      src="{{ post.cover_image.url }}"
+      alt="{{ post.title }}"
+    >
+  {% endif %}
+
+  {# Content #}
+  <div class="post-detail__content">
+    {{ post.content|safe }}
+  </div>
+
+  {# Author card #}
+  {% if post.author %}
+    <aside class="author-card" aria-label="Muallif haqida">
+      {% if post.author.photo %}
+        <img
+          class="author-card__photo"
+          src="{{ post.author.photo.url }}"
+          alt="{{ post.author }}"
+        >
+      {% else %}
+        <div class="author-card__initials" aria-hidden="true">
+          {{ post.author.user.first_name|first|upper }}{{ post.author.user.last_name|first|upper }}
+        </div>
+      {% endif %}
+      <div class="author-card__info">
+        <h4>{{ post.author }}</h4>
+        {% if post.author.title %}
+          <p class="text-muted">
+            <i class="fas fa-briefcase" aria-hidden="true"></i>
+            {{ post.author.title }}
+          </p>
+        {% endif %}
+        {% if post.author.bio %}
+          <p>{{ post.author.bio }}</p>
+        {% endif %}
+      </div>
+    </aside>
+  {% endif %}
+</article>
+{% endblock %}

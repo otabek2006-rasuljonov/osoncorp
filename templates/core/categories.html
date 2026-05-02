@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Kategoriyalar – {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1><i class="fas fa-tags" aria-hidden="true"></i> Kategoriyalar</h1>
+    <p>Qiziqarli mavzular bo'yicha maqolalarni toping</p>
+  </div>
+</div>
+
+<div class="container">
+  {% if categories %}
+    <div class="categories-grid">
+      {% for cat in categories %}
+        <a href="{% url 'posts:category_detail' cat.slug %}" class="category-card" style="text-decoration:none;color:inherit;">
+          <div class="category-card__icon" aria-hidden="true">
+            <i class="fas fa-folder-open"></i>
+          </div>
+          <div class="category-card__name">{{ cat.name }}</div>
+          {% if cat.description %}
+            <div class="category-card__desc">{{ cat.description }}</div>
+          {% endif %}
+          <div class="category-card__count">
+            <i class="fas fa-newspaper" aria-hidden="true"></i>
+            {{ cat.posts.count }} ta maqola
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <i class="fas fa-folder" aria-hidden="true"></i>
+      <h3>Kategoriyalar mavjud emas</h3>
+      <p class="text-muted">Admin paneldan kategoriyalar qo'shing.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
