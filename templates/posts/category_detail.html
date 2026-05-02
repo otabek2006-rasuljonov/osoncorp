@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} – {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1><i class="fas fa-folder-open" aria-hidden="true"></i> {{ category.name }}</h1>
+    {% if category.description %}
+      <p>{{ category.description }}</p>
+    {% endif %}
+  </div>
+</div>
+
+<section class="posts-feed">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}"><i class="fas fa-home"></i> Bosh sahifa</a>
+      <span class="breadcrumb__sep" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+      <a href="{% url 'core:categories' %}">Kategoriyalar</a>
+      <span class="breadcrumb__sep" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+      <span aria-current="page">{{ category.name }}</span>
+    </nav>
+
+    {% if posts %}
+      <div class="posts-grid">
+        {% for post in posts %}
+          <article class="post-card">
+            {% if post.cover_image %}
+              <img class="post-card__image" src="{{ post.cover_image.url }}" alt="{{ post.title }}" loading="lazy">
+            {% else %}
+              <div class="post-card__image-placeholder" aria-hidden="true">
+                <i class="fas fa-image"></i>
+              </div>
+            {% endif %}
+
+            <div class="post-card__body">
+              <h2 class="post-card__title">
+                <a href="{% url 'posts:detail' post.slug %}">{{ post.title }}</a>
+              </h2>
+              {% if post.excerpt %}
+                <p class="post-card__excerpt">{{ post.excerpt }}</p>
+              {% endif %}
+              <footer class="post-card__footer">
+                {% if post.author %}
+                  <div class="post-card__author">
+                    {% if post.author.photo %}
+                      <img class="post-card__author-photo" src="{{ post.author.photo.url }}" alt="{{ post.author }}">
+                    {% else %}
+                      <div class="post-card__author-initials" aria-hidden="true">
+                        {{ post.author.user.first_name|first|upper }}{{ post.author.user.last_name|first|upper }}
+                      </div>
+                    {% endif %}
+                    <span>{{ post.author }}</span>
+                  </div>
+                {% endif %}
+                <span class="post-card__date">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  {{ post.created_at|date:"d M Y" }}
+                </span>
+              </footer>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-pen-nib"></i>
+        <h3>Bu kategoriyada hali maqolalar yo'q</h3>
+        <p class="text-muted">Tez orada yangi maqolalar qo'shiladi.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
