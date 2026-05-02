@@ -4,7 +4,7 @@ from .models import Post, Category
 
 def post_list(request):
     category_slug = request.GET.get('category')
-    posts = Post.objects.filter(is_published=True).select_related('author', 'category')
+    posts = Post.objects.filter(is_published=True).select_related('author', 'category', 'author__user')
     selected_category = None
     if category_slug:
         selected_category = get_object_or_404(Category, slug=category_slug)
@@ -22,7 +22,7 @@ def post_detail(request, slug):
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    posts = Post.objects.filter(category=category, is_published=True)
+    posts = Post.objects.filter(category=category, is_published=True).select_related('author', 'author__user')
     return render(request, 'posts/category_detail.html', {
         'category': category,
         'posts': posts,

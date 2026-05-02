@@ -3,7 +3,7 @@ from posts.models import Post, Category, Expert
 
 
 def home(request):
-    posts = Post.objects.filter(is_published=True).order_by('-created_at')
+    posts = Post.objects.filter(is_published=True).select_related('author', 'category', 'author__user').order_by('-created_at')
     return render(request, 'core/home.html', {'posts': posts})
 
 
